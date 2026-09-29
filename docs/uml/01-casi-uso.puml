@@ -1,0 +1,29 @@
+@startuml
+!include stile.iuml
+title Diagramma dei casi d'uso
+left to right direction
+
+actor Utente
+actor Docente
+actor Studente
+Utente <|-- Docente
+Utente <|-- Studente
+
+rectangle "Self Assessment Quiz" {
+  usecase "UC1 Gestire i profili\ne scegliere il proprio" as UC1
+  usecase "UC2 Gestire i quiz" as UC2
+  usecase "UC3 Gestire le domande" as UC3
+  usecase "UC4 Consultare\nle statistiche" as UC4
+  usecase "UC5 Svolgere un quiz" as UC5
+  usecase "UC6 Autovalutare una\nrisposta aperta" as UC6
+  usecase "UC7 Consultare\ni propri risultati" as UC7
+}
+
+Utente -- UC1
+Docente -- UC2
+Docente -- UC3
+Docente -- UC4
+Studente -- UC5
+Studente -- UC7
+UC6 .> UC5 : <<extend>>
+@enduml

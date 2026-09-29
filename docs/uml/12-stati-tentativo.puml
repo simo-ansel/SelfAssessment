@@ -1,0 +1,15 @@
+@startuml
+!include stile.iuml
+title Stati — ciclo di vita di un tentativo
+
+state "In compilazione" as InCompilazione
+InCompilazione : esiste solo nel browser
+state "Corretto" as Corretto
+Corretto : salvato con il punteggio
+
+[*] --> InCompilazione : lo studente apre un quiz
+InCompilazione --> InCompilazione : risponde\nconsegna incompleta
+InCompilazione --> Corretto : consegna\n[tutte le risposte date]
+InCompilazione --> [*] : annulla
+Corretto --> [*] : eliminazione del quiz\no dello studente
+@enduml

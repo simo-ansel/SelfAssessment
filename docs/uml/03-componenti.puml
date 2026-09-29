@@ -1,0 +1,49 @@
+@startuml
+!include stile.iuml
+title Architettura Model-View-Presenter
+skinparam packageStyle rectangle
+
+package "Frontend (browser)" {
+  package "View " as FV {
+    [HomeView]
+    [DocenteView]
+    [StudenteView]
+  }
+  package "Presenter " as FP {
+    [HomePresenter]
+    [DocentePresenter]
+    [StudentePresenter]
+  }
+  package "Model " as FM {
+    [ApiService]
+    [Session]
+  }
+}
+
+package "Backend (PHP)" {
+  [Router]
+  package "Presenter" as BP {
+    [UserPresenter]
+    [QuizPresenter]
+    [AttemptPresenter]
+  }
+  package "Model" as BM {
+    [Repository]
+    [Correzione]
+  }
+  package "View" as BV {
+    [JsonView]
+  }
+}
+
+database "MySQL" as DB
+
+FP --> FV : aggiorna
+FV ..> FP : notifica eventi
+FP --> FM
+FM --> Router : HTTP + JSON
+Router --> BP
+BP --> BM
+BP --> BV
+BM --> DB : PDO
+@enduml

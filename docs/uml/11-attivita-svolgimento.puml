@@ -1,0 +1,38 @@
+@startuml
+!include stile.iuml
+title Attività — svolgimento di un quiz
+
+|Studente|
+start
+:Sceglie un quiz;
+|Sistema|
+:Mostra le domande
+senza le soluzioni;
+repeat
+  |Studente|
+  repeat
+    if (Tipo di domanda?) then (scelta multipla)
+      :Seleziona un'opzione;
+    else (risposta aperta)
+      :Scrive la risposta;
+      if (Vuole confrontarsi?) then (sì)
+        :Legge la risposta attesa;
+      endif
+      :Si autovaluta
+(giusta / sbagliata);
+    endif
+    |Sistema|
+    :Aggiorna l'avanzamento;
+    |Studente|
+  repeat while (Chiede la consegna?) is (no)
+  -> sì;
+  |Sistema|
+  backward:Evidenzia le domande mancanti;
+repeat while (Mancano risposte?) is (sì)
+-> no;
+:Corregge ogni risposta
+con la strategia del suo tipo;
+:Salva tentativo e punteggio;
+:Mostra l'esito;
+stop
+@enduml

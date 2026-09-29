@@ -1,0 +1,23 @@
+@startuml
+!include stile.iuml
+title Diagramma di deployment
+
+node "Dispositivo dell'utente" {
+  node "Browser web" as browser {
+    artifact "HTML · CSS · JavaScript" as client
+  }
+}
+
+node "Host Docker" {
+  node "<<container>>\nweb (php:8.2-apache)" as web {
+    artifact "frontend/" as fe
+    artifact "backend/public/index.php" as be
+  }
+  node "<<container>>\ndb (mysql:8.0)" as dbnode {
+    database "quizdb" as db
+  }
+}
+
+browser --> web : HTTP :8080\npagine statiche e /api (JSON)
+web --> dbnode : TCP 3306\nPDO
+@enduml

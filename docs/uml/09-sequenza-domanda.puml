@@ -1,0 +1,37 @@
+@startuml
+!include stile.iuml
+title Sequenza — il docente aggiunge una domanda
+autonumber
+
+actor Docente
+participant DocenteView as V
+participant DocentePresenter as P
+participant ApiService as A
+participant Router as R
+participant QuizPresenter as QP
+participant QuizRepository as M
+database MySQL as DB
+
+Docente -> V : compila il form e salva
+V -> P : notifica("salvaDomanda")
+P -> V : datiDomanda()
+V --> P : {testo, tipo, opzioni}
+P -> A : creaDomanda(quizId, dati)
+A -> R : POST /api/quizzes/{id}/questions
+R -> QP : creaDomanda(id, body)
+QP -> QP : quizDelDocente(id)\nvalidaDomanda(body)
+alt non autorizzato o dati non validi
+  QP --> A : 403 / 400 {errore}
+  A --> P : Error
+  P -> V : mostraErrore(messaggio)
+else dati validi
+  QP -> M : addQuestion(quizId, dati)
+  M -> DB : INSERT questions, INSERT options
+  QP -> M : find(quizId)
+  M --> QP : quiz con domande
+  QP --> A : 201 quiz (JSON)
+  A --> P : quiz
+  P -> V : mostraDettaglio(quiz)
+  P -> V : mostraConferma("Domanda salvata")
+end
+@enduml

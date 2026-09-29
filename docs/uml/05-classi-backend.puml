@@ -1,0 +1,106 @@
+@startuml
+!include stile.iuml
+title Diagramma delle classi — backend
+
+class Router {
+  +run()
+  -rotte(body, utente): array
+  -utenteCorrente(): array
+}
+
+package Presenter {
+  class UserPresenter {
+    +index()
+    +create(body)
+    +delete(id)
+    +attempts(id)
+  }
+  class QuizPresenter {
+    -utente: array
+    +index()
+    +show(id)
+    +create(body)
+    +update(id, body)
+    +delete(id)
+    +creaDomanda(quizId, body)
+    +modificaDomanda(id, body)
+    +eliminaDomanda(id)
+    +statistiche(quizId)
+    -soloDocente()
+    -quizDelDocente(id): array
+    -validaDomanda(body)
+  }
+  class AttemptPresenter {
+    -utente: array
+    +create(quizId, body)
+    +show(id)
+  }
+}
+
+package Model {
+  class UserRepository {
+    +all(): array
+    +find(id): array
+    +create(nome, ruolo): int
+    +delete(id)
+  }
+  class QuizRepository {
+    +all(docenteId): array
+    +find(id, perStudente): array
+    +create(titolo, descrizione, docenteId): int
+    +update(id, titolo, descrizione)
+    +delete(id)
+    +addQuestion(quizId, dati)
+    +updateQuestion(id, dati)
+    +deleteQuestion(id)
+    +statistics(quizId): array
+  }
+  class AttemptRepository {
+    +create(quizId, studenteId, risposte): int
+    +find(id): array
+    +byStudente(studenteId): array
+  }
+  interface Correzione {
+    +valuta(risposta): bool
+  }
+  class CorrezioneAutomatica {
+    -opzioniCorrette: int[]
+    +valuta(risposta): bool
+  }
+  class Autovalutazione {
+    +valuta(risposta): bool
+  }
+  class Database {
+    +{static} pdo(): PDO
+  }
+}
+
+package View {
+  class JsonView {
+    +{static} send(dati, status)
+    +{static} error(messaggio, status)
+  }
+}
+
+Router ..> UserPresenter
+Router ..> QuizPresenter
+Router ..> AttemptPresenter
+Router ..> UserRepository : identifica\nl'utente
+
+UserPresenter --> UserRepository
+UserPresenter --> AttemptRepository
+QuizPresenter --> QuizRepository
+AttemptPresenter --> AttemptRepository
+
+AttemptRepository ..> Correzione
+Correzione <|.. CorrezioneAutomatica
+Correzione <|.. Autovalutazione
+
+UserRepository ..> Database
+QuizRepository ..> Database
+AttemptRepository ..> Database
+
+UserPresenter ..> JsonView
+QuizPresenter ..> JsonView
+AttemptPresenter ..> JsonView
+@enduml

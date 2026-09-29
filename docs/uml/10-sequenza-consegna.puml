@@ -1,0 +1,40 @@
+@startuml
+!include stile.iuml
+title Sequenza — lo studente consegna un quiz
+autonumber
+
+actor Studente
+participant StudenteView as V
+participant StudentePresenter as P
+participant ApiService as A
+participant AttemptPresenter as AP
+participant AttemptRepository as M
+participant "Correzione" as C
+database MySQL as DB
+
+Studente -> V : clic su "Consegna"
+V -> P : notifica("consegna")
+P -> V : raccogliRisposte()
+V --> P : risposte
+P -> P : incomplete(risposte)
+alt mancano risposte
+  P -> V : evidenziaIncomplete(ids)
+  P -> V : mostraErrore("Mancano N risposte")
+else questionario completo
+  P -> A : consegna(quizId, risposte)
+  A -> AP : POST /api/quizzes/{id}/attempts
+  AP -> M : create(quizId, studenteId, risposte)
+  M -> DB : BEGIN
+  M -> DB : INSERT attempts
+  loop per ogni domanda del quiz
+    M -> C : valuta(risposta)
+    C --> M : corretta?
+    M -> DB : INSERT answers
+  end
+  M -> DB : UPDATE attempts SET punteggio
+  M -> DB : COMMIT
+  AP --> A : 201 tentativo con esito
+  A --> P : tentativo
+  P -> V : mostraEsito(tentativo)
+end
+@enduml

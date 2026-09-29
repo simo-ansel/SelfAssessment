@@ -1,0 +1,62 @@
+@startuml
+!include stile.iuml
+title Schema della base di dati
+hide circle
+skinparam linetype ortho
+
+entity users {
+  * id : INT <<PK>>
+  --
+  * nome : VARCHAR(100)
+  * ruolo : ENUM(docente, studente)
+}
+entity quizzes {
+  * id : INT <<PK>>
+  --
+  * titolo : VARCHAR(200)
+  descrizione : TEXT
+  * docente_id : INT <<FK>>
+}
+entity questions {
+  * id : INT <<PK>>
+  --
+  * quiz_id : INT <<FK>>
+  * testo : TEXT
+  * tipo : ENUM(scelta_multipla, risposta_aperta)
+  risposta_attesa : TEXT
+}
+entity options {
+  * id : INT <<PK>>
+  --
+  * question_id : INT <<FK>>
+  * testo : VARCHAR(255)
+  * corretta : BOOLEAN
+}
+entity attempts {
+  * id : INT <<PK>>
+  --
+  * quiz_id : INT <<FK>>
+  * studente_id : INT <<FK>>
+  * data_svolgimento : DATETIME
+  * punteggio : INT
+  * totale : INT
+}
+entity answers {
+  * id : INT <<PK>>
+  --
+  * attempt_id : INT <<FK>>
+  * question_id : INT <<FK>>
+  option_id : INT <<FK>>
+  testo_libero : TEXT
+  * corretta : BOOLEAN
+}
+
+users ||--o{ quizzes : crea
+users ||--o{ attempts : svolge
+quizzes ||--o{ questions : contiene
+quizzes ||--o{ attempts : ""
+questions ||--o{ options : ha
+attempts ||--|{ answers : contiene
+questions ||--o{ answers : ""
+options |o--o{ answers : scelta
+@enduml

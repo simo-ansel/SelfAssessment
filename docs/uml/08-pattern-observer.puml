@@ -1,0 +1,33 @@
+@startuml
+!include stile.iuml
+title Design pattern Observer — dalla View al Presenter
+hide empty members
+
+class Osservabile <<Subject>> {
+  -osservatori: {evento: funzione[]}
+  +on(evento, osservatore)
+  +notifica(evento, ...dati)
+}
+
+class HomeView <<ConcreteSubject>>
+class DocenteView <<ConcreteSubject>>
+class StudenteView <<ConcreteSubject>>
+
+class HomePresenter <<Observer>>
+class DocentePresenter <<Observer>>
+class StudentePresenter <<Observer>>
+
+Osservabile <|-- HomeView
+Osservabile <|-- DocenteView
+Osservabile <|-- StudenteView
+
+HomePresenter --> HomeView : on('crea', …)
+DocentePresenter --> DocenteView : on('salvaQuiz', …)
+StudentePresenter --> StudenteView : on('consegna', …)
+
+note bottom of Osservabile
+  Il Presenter registra le proprie funzioni con on();
+  la View le invoca con notifica() senza sapere
+  chi le ha registrate.
+end note
+@enduml

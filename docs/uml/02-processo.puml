@@ -1,0 +1,22 @@
+@startuml
+!include stile.iuml
+title Processo di sviluppo incrementale
+
+start
+:Analisi dei requisiti
+(obiettivi, ruoli, casi d'uso);
+:Progettazione architetturale
+(MVP, database, API REST);
+repeat
+  :Scelta dell'incremento;
+  :Progettazione di dettaglio;
+  :Implementazione
+database → API → interfaccia;
+  :Test dell'incremento;
+  :Commit su GitHub;
+repeat while (Altri incrementi?) is (sì)
+-> no;
+:Revisione del codice e test finali;
+:Documentazione e diagrammi UML;
+stop
+@enduml

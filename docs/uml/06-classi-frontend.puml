@@ -1,0 +1,92 @@
+@startuml
+!include stile.iuml
+title Diagramma delle classi — frontend
+
+package View {
+  class Osservabile <<Subject>> {
+    +on(evento, osservatore)
+    +notifica(evento, ...dati)
+  }
+  class HomeView {
+    +mostraUtenti(utenti)
+    +datiNuovoUtente(): object
+  }
+  class DocenteView {
+    +mostraQuiz(quiz, idSelezionato)
+    +mostraDettaglio(quiz)
+    +mostraStatistiche(stat)
+    +datiQuiz(): object
+    +datiDomanda(): object
+  }
+  class StudenteView {
+    +mostraSvolgimento(quiz)
+    +raccogliRisposte(): array
+    +mostraAvanzamento(completate, totale)
+    +evidenziaIncomplete(ids)
+    +mostraEsito(tentativo)
+  }
+  class Dom <<utility>> {
+    +{static} testo(tag, classe, contenuto)
+    +{static} bottone(etichetta, classe, azione)
+    +{static} avviso(messaggio, tipo)
+  }
+}
+
+package Presenter {
+  class HomePresenter {
+    +init()
+    -crea()
+    -elimina(utente)
+    -entra(utente)
+  }
+  class DocentePresenter {
+    -quizAperto
+    -modificaQuiz: boolean
+    -domandaInModifica
+    +init()
+    -salvaQuiz()
+    -salvaDomanda()
+    -statistiche()
+  }
+  class StudentePresenter {
+    -quizInCorso
+    +init()
+    -apriQuiz(id)
+    -consegna()
+    -incomplete(risposte): array
+  }
+}
+
+package Model {
+  class ApiService {
+    +{static} quiz(docenteId)
+    +{static} creaDomanda(quizId, dati)
+    +{static} consegna(quizId, risposte)
+    +{static} statistiche(id)
+    -{static} richiesta(metodo, percorso, corpo)
+  }
+  class Session {
+    +{static} salva(utente)
+    +{static} utente()
+    +{static} richiedi(ruolo)
+    +{static} esci()
+  }
+}
+
+Osservabile <|-- HomeView
+Osservabile <|-- DocenteView
+Osservabile <|-- StudenteView
+HomePresenter --> HomeView
+DocentePresenter --> DocenteView
+StudentePresenter --> StudenteView
+HomePresenter ..> ApiService
+DocentePresenter ..> ApiService
+StudentePresenter ..> ApiService
+HomePresenter ..> Session
+DocentePresenter ..> Session
+StudentePresenter ..> Session
+ApiService ..> Session
+HomeView ..> Dom
+DocenteView ..> Dom
+StudenteView ..> Dom
+@enduml

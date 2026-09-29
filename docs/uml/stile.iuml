@@ -1,0 +1,8 @@
+' Stile comune a tutti i diagrammi
+!theme plain
+skinparam backgroundColor white
+skinparam defaultFontName Arial
+skinparam defaultFontSize 13
+skinparam shadowing false
+skinparam ArrowColor #444444
+skinparam classAttributeIconSize 0

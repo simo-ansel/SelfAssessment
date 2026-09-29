@@ -1,0 +1,31 @@
+@startuml
+!include stile.iuml
+title Design pattern Strategy — correzione delle risposte
+
+class AttemptRepository <<Context>> {
+  +create(quizId, studenteId, risposte): int
+}
+interface Correzione <<Strategy>> {
+  +valuta(risposta): bool
+}
+class CorrezioneAutomatica <<ConcreteStrategy>> {
+  -opzioniCorrette: int[]
+  +valuta(risposta): bool
+}
+class Autovalutazione <<ConcreteStrategy>> {
+  +valuta(risposta): bool
+}
+
+AttemptRepository o-- "2" Correzione : una per tipo\ndi domanda
+Correzione <|.. CorrezioneAutomatica
+Correzione <|.. Autovalutazione
+
+note right of CorrezioneAutomatica
+  scelta multipla:
+  l'opzione scelta è fra quelle corrette?
+end note
+note right of Autovalutazione
+  risposta aperta:
+  vale il giudizio dello studente
+end note
+@enduml
