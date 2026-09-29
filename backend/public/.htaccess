@@ -1,0 +1,4 @@
+# Ogni URL che non corrisponde a un file reale viene servito da index.php.
+RewriteEngine On
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule ^ index.php [QSA,L]
