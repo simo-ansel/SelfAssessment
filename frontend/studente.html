@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="it" data-bs-theme="dark">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Area studente · Self Assessment Quiz</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet">
+</head>
+<body>
+<nav class="navbar border-bottom">
+    <div class="container contenuto">
+        <span class="navbar-brand fw-semibold">Self Assessment Quiz <span class="badge text-bg-secondary ms-1">studente</span></span>
+        <div class="d-flex align-items-center gap-2">
+            <span id="avatar-utente"></span>
+            <span id="nome-utente" class="d-none d-sm-inline"></span>
+            <button id="btn-esci" class="btn btn-sm btn-outline-secondary ms-2" type="button">Esci</button>
+        </div>
+    </div>
+</nav>
+
+<main class="container contenuto py-4">
+    <div class="row g-4">
+
+        <!-- Colonna sinistra: quiz disponibili e risultati -->
+        <aside class="col-lg-4">
+            <section class="card mb-4">
+                <header class="card-header"><h1 class="h6 mb-0">Quiz disponibili</h1></header>
+                <div id="elenco-quiz" class="list-group list-group-flush"></div>
+            </section>
+            <section class="card">
+                <header class="card-header"><h2 class="h6 mb-0">I miei risultati</h2></header>
+                <div id="elenco-storico" class="list-group list-group-flush"></div>
+            </section>
+        </aside>
+
+        <!-- Colonna destra: segnaposto, svolgimento oppure esito -->
+        <div class="col-lg-8">
+
+            <section id="vuoto" class="card vuoto">
+                Scegli un quiz da svolgere, oppure rivedi un tuo risultato.
+            </section>
+
+            <section id="svolgimento" class="card d-none">
+                <header class="card-body border-bottom">
+                    <h2 id="titolo-svolgimento" class="h4 mb-1"></h2>
+                    <p id="descrizione-svolgimento" class="text-secondary"></p>
+                    <div class="d-flex justify-content-between small text-secondary mb-1">
+                        <span>Avanzamento</span>
+                        <span id="testo-avanzamento"></span>
+                    </div>
+                    <div class="progress" role="progressbar" aria-label="Avanzamento">
+                        <div id="barra-avanzamento" class="progress-bar" style="width: 0%"></div>
+                    </div>
+                </header>
+                <div id="contenitore-domande" class="card-body"></div>
+                <footer class="card-body border-top d-flex justify-content-end gap-2">
+                    <button id="btn-annulla" class="btn btn-outline-secondary" type="button">Annulla</button>
+                    <button id="btn-consegna" class="btn btn-primary" type="button">Consegna</button>
+                </footer>
+            </section>
+
+            <section id="esito" class="card d-none">
+                <div class="card-body">
+                    <p class="small text-secondary text-uppercase mb-1">Esito</p>
+                    <h2 id="titolo-esito" class="h4 mb-3"></h2>
+                    <div class="d-flex align-items-center gap-4 mb-4">
+                        <span id="punteggio" class="punteggio"></span>
+                        <div class="flex-grow-1">
+                            <div class="progress mb-1"><div id="barra-esito" class="progress-bar"></div></div>
+                            <span id="percentuale" class="small text-secondary"></span>
+                        </div>
+                    </div>
+                    <div id="dettaglio-esito"></div>
+                    <button id="btn-chiudi-esito" class="btn btn-outline-secondary mt-4" type="button">Torna ai quiz</button>
+                </div>
+            </section>
+        </div>
+    </div>
+</main>
+
+<div id="avvisi" class="avvisi" aria-live="polite"></div>
+
+<script src="js/models/Session.js"></script>
+<script src="js/models/ApiService.js"></script>
+<script src="js/views/Osservabile.js"></script>
+<script src="js/views/Dom.js"></script>
+<script src="js/views/StudenteView.js"></script>
+<script src="js/presenters/StudentePresenter.js"></script>
+<script>
+    const utente = Session.richiedi('studente');
+    if (utente) {
+        new StudentePresenter(new StudenteView(), utente).init();
+    }
+</script>
+</body>
+</html>
