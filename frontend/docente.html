@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="it" data-bs-theme="dark">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Area docente · Self Assessment Quiz</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet">
+</head>
+<body>
+<nav class="navbar border-bottom">
+    <div class="container contenuto">
+        <span class="navbar-brand fw-semibold">Self Assessment Quiz <span class="badge text-bg-secondary ms-1">docente</span></span>
+        <div class="d-flex align-items-center gap-2">
+            <span id="avatar-utente"></span>
+            <span id="nome-utente" class="d-none d-sm-inline"></span>
+            <button id="btn-esci" class="btn btn-sm btn-outline-secondary ms-2" type="button">Esci</button>
+        </div>
+    </div>
+</nav>
+
+<main class="container contenuto py-4">
+    <div class="row g-4">
+
+        <!-- Colonna sinistra: elenco dei quiz -->
+        <aside class="col-lg-4">
+            <section class="card">
+                <header class="card-header">
+                    <h1 class="h6 mb-0">I miei quiz</h1>
+                    <button id="btn-nuovo-quiz" class="btn btn-sm btn-primary" type="button">+ Nuovo</button>
+                </header>
+                <div id="elenco-quiz" class="list-group list-group-flush"></div>
+            </section>
+        </aside>
+
+        <!-- Colonna destra: segnaposto, form del quiz oppure dettaglio -->
+        <div class="col-lg-8">
+
+            <section id="vuoto" class="card vuoto">
+                Seleziona un quiz dall'elenco o creane uno nuovo.
+            </section>
+
+            <form id="form-quiz" class="card d-none" novalidate>
+                <header class="card-header"><h2 id="titolo-form-quiz" class="h6 mb-0">Nuovo quiz</h2></header>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <label class="form-label" for="quiz-titolo">Titolo</label>
+                        <input id="quiz-titolo" class="form-control" type="text" autocomplete="off">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label" for="quiz-descrizione">Descrizione <span class="text-secondary">(facoltativa)</span></label>
+                        <textarea id="quiz-descrizione" class="form-control" rows="2"></textarea>
+                    </div>
+                    <button class="btn btn-primary" type="submit">Salva</button>
+                    <button id="btn-annulla-quiz" class="btn btn-outline-secondary" type="button">Annulla</button>
+                </div>
+            </form>
+
+            <div id="dettaglio" class="d-none">
+                <section class="card mb-4">
+                    <div class="card-body d-flex flex-wrap justify-content-between gap-3">
+                        <div>
+                            <h2 id="titolo-quiz" class="h4 mb-1"></h2>
+                            <p id="descrizione-quiz" class="text-secondary mb-0"></p>
+                        </div>
+                        <div class="btn-group align-self-start">
+                            <button id="btn-statistiche" class="btn btn-sm btn-outline-secondary" type="button">Statistiche</button>
+                            <button id="btn-modifica-quiz" class="btn btn-sm btn-outline-secondary" type="button">Modifica</button>
+                            <button id="btn-elimina-quiz" class="btn btn-sm btn-outline-danger" type="button">Elimina</button>
+                        </div>
+                    </div>
+                </section>
+
+                <section id="statistiche" class="card mb-4 d-none">
+                    <header class="card-header">
+                        <h3 class="h6 mb-0">Statistiche</h3>
+                        <button id="btn-chiudi-statistiche" class="btn-close" type="button" aria-label="Chiudi"></button>
+                    </header>
+                    <div id="contenuto-statistiche" class="card-body"></div>
+                </section>
+
+                <section class="card mb-4">
+                    <header class="card-header">
+                        <h3 class="h6 mb-0">Domande</h3>
+                        <span id="numero-domande" class="small text-secondary"></span>
+                    </header>
+                    <div id="elenco-domande" class="card-body"></div>
+                </section>
+
+                <form id="form-domanda" class="card" novalidate>
+                    <header class="card-header"><h3 id="titolo-form-domanda" class="h6 mb-0">Nuova domanda</h3></header>
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <label class="form-label" for="domanda-testo">Testo</label>
+                            <textarea id="domanda-testo" class="form-control" rows="2"></textarea>
+                        </div>
+
+                        <div class="btn-group mb-3" role="group" aria-label="Tipo di domanda">
+                            <input type="radio" class="btn-check" name="tipo" id="tipo-multipla" value="scelta_multipla" checked>
+                            <label class="btn btn-sm btn-outline-secondary" for="tipo-multipla">Scelta multipla</label>
+                            <input type="radio" class="btn-check" name="tipo" id="tipo-aperta" value="risposta_aperta">
+                            <label class="btn btn-sm btn-outline-secondary" for="tipo-aperta">Risposta aperta</label>
+                        </div>
+
+                        <!-- Quattro righe fisse: quelle lasciate vuote vengono ignorate -->
+                        <div id="blocco-opzioni" class="mb-3">
+                            <p class="form-text mt-0">Da 2 a 4 opzioni. Seleziona quella corretta.</p>
+                            <div class="input-group mb-2">
+                                <span class="input-group-text"><input class="form-check-input mt-0" type="radio" name="corretta" aria-label="Opzione 1 corretta"></span>
+                                <input class="form-control" type="text" placeholder="Opzione 1">
+                            </div>
+                            <div class="input-group mb-2">
+                                <span class="input-group-text"><input class="form-check-input mt-0" type="radio" name="corretta" aria-label="Opzione 2 corretta"></span>
+                                <input class="form-control" type="text" placeholder="Opzione 2">
+                            </div>
+                            <div class="input-group mb-2">
+                                <span class="input-group-text"><input class="form-check-input mt-0" type="radio" name="corretta" aria-label="Opzione 3 corretta"></span>
+                                <input class="form-control" type="text" placeholder="Opzione 3 (facoltativa)">
+                            </div>
+                            <div class="input-group">
+                                <span class="input-group-text"><input class="form-check-input mt-0" type="radio" name="corretta" aria-label="Opzione 4 corretta"></span>
+                                <input class="form-control" type="text" placeholder="Opzione 4 (facoltativa)">
+                            </div>
+                        </div>
+
+                        <div id="blocco-aperta" class="mb-3 d-none">
+                            <label class="form-label" for="domanda-attesa">Risposta attesa</label>
+                            <textarea id="domanda-attesa" class="form-control" rows="3"></textarea>
+                            <div class="form-text">Lo studente la confronta con la propria risposta e si autovaluta.</div>
+                        </div>
+
+                        <button class="btn btn-primary" type="submit">Salva domanda</button>
+                        <button id="btn-annulla-domanda" class="btn btn-outline-secondary" type="button">Annulla</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</main>
+
+<div id="avvisi" class="avvisi" aria-live="polite"></div>
+
+<script src="js/models/Session.js"></script>
+<script src="js/models/ApiService.js"></script>
+<script src="js/views/Osservabile.js"></script>
+<script src="js/views/Dom.js"></script>
+<script src="js/views/DocenteView.js"></script>
+<script src="js/presenters/DocentePresenter.js"></script>
+<script>
+    const utente = Session.richiedi('docente');
+    if (utente) {
+        new DocentePresenter(new DocenteView(), utente).init();
+    }
+</script>
+</body>
+</html>
