@@ -1,0 +1,35 @@
+# Avvio: docker compose up --build   ->   http://localhost:8080
+services:
+  web:
+    build: ./docker/php
+    ports:
+      - "8080:80"
+    volumes:
+      - ./:/var/www/html
+    environment:
+      DB_HOST: db
+      DB_NAME: quizdb
+      DB_USER: quiz
+      DB_PASS: quiz
+    depends_on:
+      db:
+        condition: service_healthy   # parte solo quando il database è pronto
+
+  db:
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: quizdb
+      MYSQL_USER: quiz
+      MYSQL_PASSWORD: quiz
+    volumes:
+      - ./docker/db/init.sql:/docker-entrypoint-initdb.d/init.sql:ro   # schema, al primo avvio
+      - dbdata:/var/lib/mysql                                          # dati persistenti
+    healthcheck:
+      # su 127.0.0.1 (TCP) risponde solo il server definitivo, non quello temporaneo di inizializzazione
+      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-uroot", "-proot"]
+      interval: 5s
+      retries: 20
+
+volumes:
+  dbdata:
